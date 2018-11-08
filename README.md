@@ -11,8 +11,8 @@ create.jsに依存したフレームワーク
 - ランダムな値生成関数
 
 # DEMO
-http://corp.aemtest.com/leonardo/  
-corp / いつもの
+https://yuki-sakaguchi.github.io/LeonardoJS/
+
 
 # 使い方
 1) このクラスでインスタンスを生成する
