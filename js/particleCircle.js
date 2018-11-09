@@ -13,6 +13,8 @@ particleCircle.init = function() {
 
   this.stage.mouseX = this.stage.canvas.width / 2; // 初期位置X
   this.stage.mouseY = this.stage.canvas.height * 1 / 3; // 初期位置Y
+
+  this.elTimer = document.querySelector('.js-timer');
   
   /**
    * パーティクルを生成
@@ -86,4 +88,7 @@ particleCircle.init = function() {
 particleCircle.update = function(e) {
   this.emitParticles();
   this.updateParticles();
+
+  var dispTimer = this.getDispTime(true);
+  this.elTimer.textContent = dispTimer.m + ':' + dispTimer.s + ':' + dispTimer.ms;
 };
