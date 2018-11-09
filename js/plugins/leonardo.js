@@ -1,15 +1,19 @@
-/**
- * Leonardo.js
- *   create.jsに依存したフレームワーク
- *   処理の作成に集中できるように、その他気にしないといけないことはこれがやってくれる
+/** 
+ * @fileoverview Leonardo.js
+ *    create.jsに依存したフレームワーク
+ *    処理の作成に集中できるように、その他気にしないといけないことはこれがやってくれる
+ * @author Yuki Sakaguchi
  */
 var Leonardo = (function() {
   var CLASS_NAME = 'Leonardo';
   var constructor, p;
+  var isIos = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+  var isAndroid = navigator.userAgent.indexOf('Android') > 0;
 
   /**
    * コンストラクタ
-   * @param {Array} options 
+   * @param {Array} options 設定用オブジェクト
+   * @constructor
    */
   constructor = function(options) {
     var self = this;
@@ -36,7 +40,12 @@ var Leonardo = (function() {
     // 要素
     this.parent = this.options.parent ? document.querySelector(this.options.parent) : null;
     this.canvas = document.querySelector(this.options.target);
-    
+
+    // 経過時間
+    this.timer = 0;
+    this.totalTime;
+    this._initTimer();
+
     // 初期化処理
     this._initStage();
     
@@ -77,11 +86,13 @@ var Leonardo = (function() {
 
   /**
    * 処理を開始
+   *    諸々の初期化を行い、tickイベントでstage.update()を行う
+   *    独自に更新処理はupdate()に記述しておく
    */
   p.play = function() {
     var self = this;
 
-    // ゲームの初期設定
+    // 初期設定
     try {
       this.init();
     } catch(e) {
@@ -101,16 +112,22 @@ var Leonardo = (function() {
     // 更新処理
     createjs.Ticker.addEventListener('tick', function(event) {
       if (self.isPause) return false;
-
       try {
          self.update(event);
       } catch(e) {
         self._clearStage();
         console.error(e);
       }
-      
       self.stage.update();
     });
+
+    // タイムの測定
+    this.timer = setInterval(function() {
+      if (self.isPause) return false;
+      self.totalTime.ms++;
+      self.totalTime.s = Math.floor(self.totalTime.ms/100);
+      self.totalTime.m = Math.floor(self.totalTime.s/60);
+    }, 10);
 
     // stageの初回更新
     this.stage.update();
@@ -128,45 +145,67 @@ var Leonardo = (function() {
    */
   p.reset = function() {
     this._clearStage();
+    this._initTimer();
     this._initStage();
     this.play();
   };
 
   /**
-   * isRetinaがtrueのとき、引数にdevicePixelRatioを掛けて返す
-   * @param {Number} 掛けられる値
-   * @returns 引数にdevicePixelRatioを掛けた値
+   * 総タイムを元に表示用に整形された値を返す
+   * @param {boolean} isZeroPadding trueの場合値をゼロ詰めする
+   * @return {Object} ms, s, mを持つオブジェクト
    */
-  p.timesRetina = function(num) {
-    if (!this.options.isRetina) return num;
-    return num * window.devicePixelRatio;
-  }
+  p.getDispTime = function(isZeroPadding) {
+    var dispTime = {
+      ms: Math.floor(this.totalTime.ms%100),
+      s: Math.floor(this.totalTime.s%60),
+      m: this.totalTime.m,
+    };
+    if (isZeroPadding) {
+      dispTime.ms = this.zeroPadding(dispTime.ms, 2);
+      dispTime.s = this.zeroPadding(dispTime.s, 2);
+      dispTime.m = this.zeroPadding(dispTime.m, 2);
+    }
+    return dispTime;
+  };
 
   /**
    * isRetinaがtrueのとき、引数にdevicePixelRatioを割って返す
-   * @param {Number} 割られる値
-   * @returns 引数にdevicePixelRatioを割った値
+   * @param {number} num 割られる値
+   * @return {number} 引数にdevicePixelRatioを割った値
    */
   p.divisionRetina = function(num) {
-    if (!this.options.isRetina) return num;
-    return num / window.devicePixelRatio;
-  }
+    return this.options.isRetina ? num / window.devicePixelRatio : num;
+  };
 
   /**
    * ランダムの値を生成
-   * @param {Number} 最小値
-   * @param {Number} 最大値
-   * @returns min〜max間のランダムの整数値
+   * @param {number} min 最小値
+   * @param {number} max 最大値
+   * @return {number} min〜max間のランダムの整数値
    */
   p.createRandom = function(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
   };
 
   /**
+   * ゼロ詰め
+   * @param {number} target 対象の数値
+   * @param {number} digit けた数
+   * @return {string} ゼロ詰めされた文字列
+   */
+  p.zeroPadding = function(target, digit) {
+    var zero = (function() {
+      var tmp = '';
+      for (var i = 0; i < digit; i++) tmp += "0";
+      return tmp;
+    })();
+    return (zero + target.toString()).slice(-digit);
+  };
+
+  /**
    * それぞれのモバイルチェック（タブレットもモバイル扱い）
    */
-  var isIos = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
-  var isAndroid = navigator.userAgent.indexOf('Android') > 0;
   p.isIos = isIos;
   p.isAndroid = isAndroid;
   p.isMobile = isIos || isAndroid;
@@ -180,6 +219,18 @@ var Leonardo = (function() {
     this.stage.removeAllChildren();
     createjs.Tween.removeAllTweens();
     this.stage.clear();
+  };
+
+  /**
+   * タイマーを初期化
+   */
+  p._initTimer = function() {
+    clearTimeout(this.timer);
+    this.totalTime = {
+      ms: 0,
+      s: 0,
+      m: 0,
+    };
   };
 
   /**

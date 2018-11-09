@@ -13,7 +13,6 @@ create.jsに依存したフレームワーク
 # DEMO
 https://yuki-sakaguchi.github.io/LeonardoJS/
 
-
 # 使い方
 1) このクラスでインスタンスを生成する
 2) 生成されたインスタンスにinit関数(canvas上で使う変数の定義)とupdate関数(fpsに合わせたstageの更新処理)を定義する
@@ -122,17 +121,23 @@ Leonardoコンストラクタで生成されたインスタンスが持つプ�
 ### isIos
 iPad, iPhone, iPodの場合`true`, それ以外`false`
 ```
-leonardo.isIos;
+leonardo.isIos; //-> true or false
 ```
 ### isAndroid
 Android端末の場合`true`, それ以外`false`
 ```
-leonardo.isAndroid;
+leonardo.isAndroid; //-> true or false
 ```
 ### isMobile
 iPad, iPhone, iPod, Androidのいずれかの場合`true`, それ以外`false`
 ```
-leonardo.isMobile;
+leonardo.isMobile; //-> true or false
+```
+
+### totalTime
+play関数を実行してからの時間を取得できる  
+```
+leonardo.totalTime; //-> {ms: 17260, s: 172, m: 2}
 ```
 
 ## メソッド
@@ -157,11 +162,12 @@ stageを全て初期化して、play関数を実行し直す
 leonardo.reset();
 ```
 
-### timesRetina
-引数の値にwindow.devicePixelRatioをかけて返す
+### getDispTime
+totalTimeを元に表示用に整形した値を取得  
+引数にtrueを入れるとゼロ詰めされた状態で取得
 ```
-// window.devicePixelRatio -> 2の場合
-leonardo.timesRetina(100); //-> 200
+leonardo.getDispTime(); //-> {ms: 9, s: 16, m: 5}
+leonardo.getDispTime(true); //-> {ms: "09", s: "16", m: "05"}
 ```
 
 ### divisionRetina
@@ -173,7 +179,14 @@ leonardo.divisionRetina(100); //-> 50
 ```
 
 ### createRandom
-引数１と２の間の整数をランダムで生成する
+第１引数と第２引数の間の整数をランダムで生成する
 ```
 leonardo.createRandom(1, 10); //-> 1〜10のどれかの整数
+```
+
+### zeroPadding
+数字のゼロ詰め  
+第１引数にターゲットの数値、第２引数には桁数を入れる
+```
+leonardo.zeroPadding(33, 5); //-> 00033
 ```
