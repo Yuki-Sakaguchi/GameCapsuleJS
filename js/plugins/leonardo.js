@@ -6,7 +6,7 @@
  */
 var Leonardo = (function() {
   var CLASS_NAME = 'Leonardo';
-  var constructor, p;
+  var constructor, p, Gacha, gachaP;
   var isIos = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
   var isAndroid = navigator.userAgent.indexOf('Android') > 0;
 
@@ -23,8 +23,8 @@ var Leonardo = (function() {
       target: '#canvas',
       isRetina: true,
       isTouch: true,
-      fps: 60,
       parent: null,
+      countDownSeconds: 0, // 秒を入れる
     };
 
     // オプション上書き
@@ -36,10 +36,6 @@ var Leonardo = (function() {
 
     // ポーズ状態かどうか
     this.isPause = false;
-
-    // 要素
-    this.parent = this.options.parent ? document.querySelector(this.options.parent) : null;
-    this.canvas = document.querySelector(this.options.target);
 
     // 経過時間
     this.timer = 0;
@@ -92,6 +88,10 @@ var Leonardo = (function() {
   p.play = function() {
     var self = this;
 
+    // fps設定
+    createjs.Ticker.init();
+    createjs.Ticker.timingMode = createjs.Ticker.RAF;
+
     // 初期設定
     try {
       this.init();
@@ -100,34 +100,27 @@ var Leonardo = (function() {
       return false;
     }
 
-    // fps設定
-    if (this.options.fps && this.options.fps != 60) {
-      // 60以外の場合はそれを優先
-      createjs.Ticker.framerate = this.options.fps;
-    } else {
-      // 60の場合はちょうどよく判定してくれるやつにする
-      createjs.Ticker.timingMode = createjs.Ticker.RAF;
-    }
-
     // 更新処理
+    createjs.Ticker.addEventListener('tick', createjs.Tween);
     createjs.Ticker.addEventListener('tick', function(event) {
       if (self.isPause) return false;
+
+      // 独自で拡張した更新処理
       try {
-         self.update(event);
+          self.update(event);
       } catch(e) {
         self._clearStage();
         console.error(e);
       }
+
       self.stage.update();
     });
 
-    // タイムの測定
+    // タイマー
     this.timer = setInterval(function() {
-      if (self.isPause) return false;
-      self.totalTime.ms++;
-      self.totalTime.s = Math.floor(self.totalTime.ms/100);
+      self.totalTime.s++;
       self.totalTime.m = Math.floor(self.totalTime.s/60);
-    }, 10);
+    }, 1000);
 
     // stageの初回更新
     this.stage.update();
@@ -137,6 +130,7 @@ var Leonardo = (function() {
    * stageの更新を止める
    */
   p.pause = function() {
+    createjs.Ticker.paused = !createjs.Ticker.paused;
     this.isPause = !this.isPause;
   };
 
@@ -153,16 +147,34 @@ var Leonardo = (function() {
   /**
    * 総タイムを元に表示用に整形された値を返す
    * @param {boolean} isZeroPadding trueの場合値をゼロ詰めする
-   * @return {Object} ms, s, mを持つオブジェクト
+   * @return {Object} s, mを持つオブジェクト
    */
   p.getDispTime = function(isZeroPadding) {
     var dispTime = {
-      ms: Math.floor(this.totalTime.ms%100),
       s: Math.floor(this.totalTime.s%60),
       m: this.totalTime.m,
     };
     if (isZeroPadding) {
-      dispTime.ms = this.zeroPadding(dispTime.ms, 2);
+      dispTime.s = this.zeroPadding(dispTime.s, 2);
+      dispTime.m = this.zeroPadding(dispTime.m, 2);
+    }
+    return dispTime;
+  };
+
+  /**
+   * 総タイムとoptions.countDownSecondsを元に残り時間を表示用に整形して値を返す
+   * @param {boolean} isZeroPadding trueの場合値をゼロ詰めする
+   * @return {Object} s, mを持つオブジェクト
+   */
+  p.getRemainingTime = function(isZeroPadding) {
+    if (!this.options.countDownSeconds) return false;
+    var remainingS = this.options.countDownSeconds - this.totalTime.s;
+    var remainingM = Math.floor(remainingS/60);
+    var dispTime = {
+      s: remainingS,
+      m: remainingM,
+    };
+    if (isZeroPadding) {
       dispTime.s = this.zeroPadding(dispTime.s, 2);
       dispTime.m = this.zeroPadding(dispTime.m, 2);
     }
@@ -204,6 +216,22 @@ var Leonardo = (function() {
   };
 
   /**
+   * カウントダウンが完了した場合はtrue, それ以外はfalse
+   *    trueの時には'countDownComplete'イベントが発火
+   */
+  p.isCountDownComplete = function() {
+    if (!this.options.countDownSeconds) return false;
+    if (this.totalTime.s > this.options.countDownSeconds) {
+      // カスタムイベントを発火
+      var eventCountDownComplete = document.createEvent('HTMLEvents');
+      eventCountDownComplete.initEvent('countDownComplete', true, false);
+      window.dispatchEvent(eventCountDownComplete);
+      return true;
+    }
+    return false;
+  };
+
+  /**
    * それぞれのモバイルチェック（タブレットもモバイル扱い）
    */
   p.isIos = isIos;
@@ -214,8 +242,9 @@ var Leonardo = (function() {
    * stageを全てクリアする
    */
   p._clearStage = function() {
-    this.isPause = false;
-    createjs.Ticker.removeAllEventListeners();
+    this.isPause = createjs.Ticker.paused = false;
+    createjs.Ticker.removeEventListener("tick", this.stage);
+    createjs.Ticker.reset();
     this.stage.removeAllChildren();
     createjs.Tween.removeAllTweens();
     this.stage.clear();
@@ -227,7 +256,6 @@ var Leonardo = (function() {
   p._initTimer = function() {
     clearTimeout(this.timer);
     this.totalTime = {
-      ms: 0,
       s: 0,
       m: 0,
     };
@@ -237,6 +265,12 @@ var Leonardo = (function() {
    * stageインスタンスを生成
    */
   p._initStage = function() {
+    // 要素の初期化
+    this.parent = this.options.parent ? document.querySelector(this.options.parent) : null;
+    this.canvas = document.querySelector(this.options.target);
+    this.canvas.style.setProperty('-webkit-tap-highlight-color', 'rgba(0, 0, 0, 0)'); // クリックしてもハイライトしないようにする
+
+    // ステージの初期化
     this.stage = null;
     this.stage = new createjs.Stage(this.options.target.replace(/(.|#)/, ''));
     this._setCanvasSize();
@@ -280,6 +314,41 @@ var Leonardo = (function() {
   p._resizeHandle = function() {
     this._setCanvasSize();
     if (this.options.isRetina) this._devicePixelRatio();
+  };
+
+
+ /**
+  * ガチャガチャ
+  * @param {Object} list 設定用オブジェクト
+  * @param {string} key パーセントを取り出すキー名
+  * @constructor
+  */
+ p.Gacha = function(list, key) {
+    this.list = list;
+    this.key = key;
+    this.totalWeight = (function() {
+        var sum = 0;
+        list.forEach(function(target) {
+            sum += target[key];
+        });
+        return sum;
+    })();
+  };
+
+  // プロトタイプを保存
+  gachaP = p.Gacha.prototype;
+
+  /**
+   * ガチャを引く
+   */
+  gachaP.drow = function() {
+    var r = Math.random() * this.totalWeight;
+    var s = 0.0;
+    for (var list in this.list) {
+      var target = this.list[list];
+      s += target[this.key];
+      if (r < s) return target;
+    }
   };
 
   return constructor;
