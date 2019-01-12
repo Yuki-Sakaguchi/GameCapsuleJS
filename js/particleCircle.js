@@ -90,5 +90,5 @@ particleCircle.update = function(e) {
   this.updateParticles();
 
   var dispTimer = this.getDispTime(true);
-  this.elTimer.textContent = dispTimer.m + ':' + dispTimer.s + ':' + dispTimer.ms;
+  this.elTimer.textContent = dispTimer.m + ':' + dispTimer.s;
 };
