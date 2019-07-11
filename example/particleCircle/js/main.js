@@ -1,7 +1,7 @@
 /**
  * パーティクルを生成
  */
-var particleCircle = new Leonardo();
+var particleCircle = new GameCapsule();
 
 /**
  * 初期化処理

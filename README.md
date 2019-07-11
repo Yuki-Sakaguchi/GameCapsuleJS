@@ -1,4 +1,4 @@
-# Leonardo.js
+# GameCapsuleJS
 create.jsに依存したフレームワーク  
 処理の作成に集中できるよう、その他気にしないといけないことはこれがやってくれる  
 名前はダヴィンチから取ったけど、特に理由はない  
@@ -11,7 +11,7 @@ create.jsに依存したフレームワーク
 - ランダムな値生成関数
 
 # DEMO
-https://yuki-sakaguchi.github.io/LeonardoJS/
+https://yuki-sakaguchi.github.io/GameCapsuleJS/example/particleCircle/index.html
 
 # 使い方
 1) このクラスでインスタンスを生成する
@@ -24,9 +24,9 @@ https://yuki-sakaguchi.github.io/LeonardoJS/
 <!-- デフォルトではcanvas[id="canvas"]が対象 -->
 <canvas id="canvas"></canvas>
 
-<!-- 依存しているcreate.jsとleonardo.jsを読み込む -->
+<!-- 依存しているcreate.jsとgame-capsule.jsを読み込む -->
 <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
-<script src="js/plugins/leonardo.js"></script>
+<script src="js/plugins/game-capsule.js"></script>
 ```
 
 ```
@@ -34,7 +34,7 @@ https://yuki-sakaguchi.github.io/LeonardoJS/
  * まずはインスタンス生成
  */
 // オプションで色々設定できる
-var moveCircle = new Leonardo({
+var moveCircle = new GameCapsule({
   target: '#canvas', // ターゲットのElement
   isRetina: true, // レティナに対応するかどうか
   isTouch: true, // stageのタッチイベントを有効にするかどうか 
@@ -90,7 +90,7 @@ window.addEventListener('load', function() {
 ```
 
 ## オプション
-Leonardoコンストラクタでインスタンスを生成する際に渡せるオプション
+GameCapsuleコンストラクタでインスタンスを生成する際に渡せるオプション
 
 ### target
 対象のcanvas  
@@ -116,58 +116,58 @@ canvasの大きさを決める親要素
 デフォルトは`null`
 
 ## プロパティ
-Leonardoコンストラクタで生成されたインスタンスが持つプロパティ
+GameCapsuleコンストラクタで生成されたインスタンスが持つプロパティ
 
 ### isIos
 iPad, iPhone, iPodの場合`true`, それ以外`false`
 ```
-leonardo.isIos; //-> true or false
+GameCapsule.isIos; //-> true or false
 ```
 ### isAndroid
 Android端末の場合`true`, それ以外`false`
 ```
-leonardo.isAndroid; //-> true or false
+GameCapsule.isAndroid; //-> true or false
 ```
 ### isMobile
 iPad, iPhone, iPod, Androidのいずれかの場合`true`, それ以外`false`
 ```
-leonardo.isMobile; //-> true or false
+GameCapsule.isMobile; //-> true or false
 ```
 
 ### totalTime
 play関数を実行してからの時間を取得できる  
 ```
-leonardo.totalTime; //-> {ms: 17260, s: 172, m: 2}
+GameCapsule.totalTime; //-> {ms: 17260, s: 172, m: 2}
 ```
 
 ## メソッド
-Leonardoコンストラクタで生成されたインスタンスが使えるメソッド
+GameCapsuleコンストラクタで生成されたインスタンスが使えるメソッド
 
 ### play
 init関数実行後、update処理を開始
 ```
-leonardo.play();
+GameCapsule.play();
 ```
 
 ### pause
 update処理を止める  
 update処理が止まっている状態で実行すると再び動き出す
 ```
-leonardo.pause();
+GameCapsule.pause();
 ```
 
 ### reset
 stageを全て初期化して、play関数を実行し直す
 ```
-leonardo.reset();
+GameCapsule.reset();
 ```
 
 ### getDispTime
 totalTimeを元に表示用に整形した値を取得  
 引数にtrueを入れるとゼロ詰めされた状態で取得
 ```
-leonardo.getDispTime(); //-> {ms: 9, s: 16, m: 5}
-leonardo.getDispTime(true); //-> {ms: "09", s: "16", m: "05"}
+GameCapsule.getDispTime(); //-> {ms: 9, s: 16, m: 5}
+GameCapsule.getDispTime(true); //-> {ms: "09", s: "16", m: "05"}
 ```
 
 ### divisionRetina
@@ -175,18 +175,18 @@ leonardo.getDispTime(true); //-> {ms: "09", s: "16", m: "05"}
 isRetinaがtrueの場合、stageとcanvasがブラウザによって倍率が変わってしまうので、そこらへんを揃えるために使う
 ```
 // window.devicePixelRatio -> 2の場合
-leonardo.divisionRetina(100); //-> 50
+GameCapsule.divisionRetina(100); //-> 50
 ```
 
 ### createRandom
 第１引数と第２引数の間の整数をランダムで生成する
 ```
-leonardo.createRandom(1, 10); //-> 1〜10のどれかの整数
+GameCapsule.createRandom(1, 10); //-> 1〜10のどれかの整数
 ```
 
 ### zeroPadding
 数字のゼロ詰め  
 第１引数にターゲットの数値、第２引数には桁数を入れる
 ```
-leonardo.zeroPadding(33, 5); //-> 00033
+GameCapsule.zeroPadding(33, 5); //-> 00033
 ```
