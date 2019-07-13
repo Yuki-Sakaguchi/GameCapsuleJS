@@ -3,16 +3,16 @@
  */
 export default class GameCapsule {
     private options;
-    private isPause;
     private timer;
-    private totalTime;
     private stage;
-    private isIos;
-    private isAndroid;
-    private isMobile;
     private parent;
     private canvas;
-    private Gacha;
+    Gacha: any;
+    isIos: any;
+    isAndroid: any;
+    isMobile: any;
+    isPause: any;
+    totalTime: any;
     constructor(options: any);
     /**
      * stageで使う変数の設定

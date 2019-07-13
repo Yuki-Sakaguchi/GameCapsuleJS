@@ -68,7 +68,7 @@ class Game extends GameCapsule {
 }
 
 // インスタンスを作成する
-var game = new Game({
+const game = new Game({
   target: '#canvas',
   isRetina: true,
   isTouch: true,
@@ -259,7 +259,7 @@ var list = [
 ]
 
 // 第１引数にガチャの中身、第２引数にはパーセンテージを扱うプロパティ名を渡して、インスタンスを作成
-gacha = new gameCapsule.Gacha(list, 'par')
+var gacha = new gameCapsule.Gacha(list, 'par')
 
 // 設定に応じてランダムでガチャの中身を取り出す
 gacha.draw() //-> { name: 'スライム', par: 90 }
