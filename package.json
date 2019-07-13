@@ -1,6 +1,6 @@
 {
   "name": "game-capsule",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -cw",
@@ -9,12 +9,6 @@
     "test": "jest",
     "prepublishOnly": "npm run build"
   },
-  "license": "MIT",
-  "main": "lib/game-capsule.js",
-  "types": "lib/index.d.ts",
-  "files": [
-    "lib"
-  ],
   "devDependencies": {
     "jest": "^24.1.0",
     "rollup": "^1.1.2",
@@ -27,5 +21,20 @@
     "@types/node": "^12.6.2",
     "createjs": "^1.0.1",
     "typescript": "^3.3.1"
-  }
+  },
+  "main": "lib/game-capsule.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "homepage": "https://github.com/Yuki-Sakaguchi",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Yuki-Sakaguchi/GameCapsuleJS.git"
+  },
+  "keywords": [
+    "create.js",
+    "game"
+  ],
+  "license": "MIT"
 }

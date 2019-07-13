@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>GameCapsule.js</title>
+    <title>es2015 | GameCapsule.js</title>
     <style>
       * {
         box-sizing: border-box;
@@ -65,16 +65,17 @@
     <script src="js/vendor/game-capsule.js"></script>
     <script src="js/main.js"></script>
     <script>
-        window.addEventListener('load', function() {
-          particleCircle.play();
-
-          document.querySelector('.js-pause').addEventListener('click', function() {
-            particleCircle.pause();
-          });
-          document.querySelector('.js-reset').addEventListener('click', function() {
-            particleCircle.reset();
-          });
-        });
+        const game = new Game()
+        window.addEventListener('load', () => {
+          game.play()
+          document.querySelector('.js-pause').addEventListener('click', (e) => {
+            game.pause()
+            e.currentTarget.textContent = game.isPause ? 'restart' : 'pause'
+          })
+          document.querySelector('.js-reset').addEventListener('click', () => {
+            game.reset()
+          })
+        })
     </script>
   </body>
 </html>

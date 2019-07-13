@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>es5 | GameCapsule.js</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+      }
+      #parent {
+          width: 300px;
+          height: 300px;
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          margin: auto;
+      }
+      #canvas {
+        background-color: black;
+        vertical-align: top;
+      }
+      .btn {
+        display: block;
+        width: 120px;
+        text-align: center;
+        border: 1px solid white;
+        padding: 6px 0;
+        margin: 10px auto;
+        color: white;
+        font-size: 12px;
+      }
+      .controller {
+        position: fixed;
+        bottom: 10px;
+        right: 0;
+        left: 0;
+        margin: auto;
+      }
+      .js-timer {
+        position: absolute;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- html -->
+    <div class="js-timer"></div>
+    <canvas id="canvas"></canvas>
+    
+    <div class="controller">
+        <div class="btn js-pause">pause</div>
+        <div class="btn js-reset">reset</div>
+    </div>
+
+    <!-- js -->
+    <script src="js/vendor/createjs.min.js"></script>
+    <script src="js/vendor/game-capsule.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+          game.play()
+
+          document.querySelector('.js-pause').addEventListener('click', function() {
+            game.pause()
+            this.textContent = game.isPause ? 'restart' : 'pause'
+          })
+          document.querySelector('.js-reset').addEventListener('click', function() {
+            game.reset()
+          })
+        })
+    </script>
+  </body>
+</html>

@@ -1,12 +1,12 @@
 /**
  * パーティクルを生成
  */
-var particleCircle = new GameCapsule();
+var game = new GameCapsule();
 
 /**
  * 初期化処理
  */
-particleCircle.init = function() {
+game.init = function() {
   var count = 0; // tick イベントの回数
   var MAX_LIFE = 40; // 寿命の最大値
   var particles = []; // パーティクルの入れ物
@@ -85,7 +85,7 @@ particleCircle.init = function() {
 /**
  * 更新処理
  */
-particleCircle.update = function(e) {
+game.update = function(e) {
   this.emitParticles();
   this.updateParticles();
 
