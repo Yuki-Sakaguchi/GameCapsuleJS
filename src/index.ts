@@ -7,16 +7,16 @@ import { Gacha } from './util/gacha';
  */
 export default class GameCapsule {
   private options
-  private isPause
   private timer
-  private totalTime
   private stage
-  private isIos
-  private isAndroid
-  private isMobile
   private parent
   private canvas
-  private Gacha
+  public Gacha
+  public isIos
+  public isAndroid
+  public isMobile
+  public isPause
+  public totalTime
 
   constructor (options) {
     // オプション
@@ -210,7 +210,7 @@ export default class GameCapsule {
   zeroPadding = function(target, digit) {
     var zero = (function() {
       var tmp = ''
-      for (var i = 0; i < digit; i++) tmp += "0"
+      for (var i = 0; i < digit; i++) tmp += '0'
       return tmp
     })()
     return (zero + target.toString()).slice(-digit)

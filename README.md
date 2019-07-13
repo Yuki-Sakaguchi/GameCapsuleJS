@@ -43,11 +43,11 @@ class Game extends GameCapsule {
   }
 
   /**
-  *  stageで使う変数などを定義
-  */
+   *  stageで使う変数などを定義
+   */
   init () {
     // updateで使いたい変数や関数はthisで定義する
-    this.move = function() {
+    this.move = () => {
       shape.x += 1
     }
 
@@ -60,8 +60,8 @@ class Game extends GameCapsule {
   }
 
   /**
-  * メインループ（stage.update()は自動でやるので不要）
-  */
+   * メインループ（stage.update()は自動でやるので不要）
+   */
   update () {
     this.move()
   }
@@ -126,7 +126,7 @@ game.update = function(e) {
 以下のように外部から再生を制御できる
 ```
 window.addEventListener('load', function() {
-  game.play() // load後自動で再生
+  game.play() // load後自動で再生
 
   // ポーズボタンで動きを止める
   document.querySelector('.js-pause').addEventListener('click', function() {
@@ -142,13 +142,13 @@ window.addEventListener('load', function() {
 
 # 使い方詳細
 ## オプション
-GameCapsuleコンストラクタでインスタンスを生成する際に渡せるオプション
+GameCapsuleインスタンスを生成する際に渡せるオプション
 ### target
 対象のcanvas  
 デフォルトは`#canvas`  
 ### isRetina
 window.devicePixelRatioに応じてcanvasやstageの倍率を変えるかどうか  
-これがtrueだとRetinaの端末で画像がボケたりしない  
+これがtrueだとRetinaの端末で画像がボケたりしない  
 デフォルトは`true`  
 ### isTouch
 stageをタッチイベントをつけるかどうか  
@@ -165,7 +165,7 @@ canvasの大きさを決める親要素
 デフォルトは`0`（カウントダウンしない）
 
 ## プロパティ
-gameCapsuleコンストラクタで生成されたインスタンスが持つプロパティ
+GameCapsuleインスタンスが持つプロパティ
 ### isIos
 iPad, iPhone, iPodの場合`true`, それ以外`false`
 ```
@@ -193,7 +193,7 @@ gameCapsule.totalTime; //-> {ms: 17260, s: 172, m: 2}
 ```
 
 ## メソッド
-gameCapsuleコンストラクタで生成されたインスタンスが使えるメソッド
+GameCapsuleインスタンスが使えるメソッド
 ### play
 init関数実行後、update処理を開始
 ```
@@ -241,4 +241,26 @@ gameCapsule.createRandom(1, 10); //-> 1〜10のどれかの整数
 第１引数にターゲットの数値、第２引数には桁数を入れる
 ```
 gameCapsule.zeroPadding(33, 5); //-> 00033
+```
+### Gacha
+ガチャガチャコンストラクタが使えます  
+ランダムで要素を取り出す時などに便利です  
+```
+// まずはガチャの中身を作る
+var list = [
+  {
+    name: 'スライム',
+    par: 90
+  },
+  {
+    name: 'はぐれメタル',
+    par: 10
+  }
+]
+
+// 第１引数にガチャの中身、第２引数にはパーセンテージを扱うプロパティ名を渡して、インスタンスを作成
+gacha = new gameCapsule.Gacha(list, 'par')
+
+// 設定に応じてランダムでガチャの中身を取り出す
+gacha.draw() //-> { name: 'スライム', par: 90 }
 ```
