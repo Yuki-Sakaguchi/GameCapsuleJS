@@ -1,23 +1,25 @@
 {
   "name": "game-capsule",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "scripts": {
-    "build": "rollup -c",
-    "watch": "rollup -cw",
-    "build:pro": "NODE_ENV=production rollup -c",
-    "watch:pro": "NODE_ENV=production rollup -cw",
+    "build": "rollup --config rollup.config.js",
+    "watch": "rollup -w --config rollup.config.js",
     "test": "jest",
+    "type": "dtsmake -s lib/game-capsule.js --dist lib/@type/index",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "jest": "^24.1.0",
+    "dtsmake": "0.0.10",
+    "jest": "^24.8.0",
     "rollup": "^1.1.2",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-typescript2": "^0.19.2",
     "rollup-plugin-uglify": "^6.0.2",
+    "ts-jest": "^24.0.2",
     "tslib": "^1.9.3"
   },
   "dependencies": {
+    "@types/jest": "^24.0.15",
     "@types/node": "^12.6.2",
     "createjs": "^1.0.1",
     "typescript": "^3.3.1"
@@ -36,5 +38,22 @@
     "create.js",
     "game"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.json"
+      }
+    },
+    "testMatch": [
+      "**/test/**/*.test.ts"
+    ]
+  }
 }

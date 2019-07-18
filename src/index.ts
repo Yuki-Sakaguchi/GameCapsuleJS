@@ -1,5 +1,5 @@
 declare const createjs
-import { CLASS_NAME, isIos, isAndroid, isMobile } from './util/util'
+import { CLASS_NAME, isIos, isAndroid, isMobile, createRandom, zeroPadding } from './util/util'
 import { Gacha } from './util/gacha';
 
 /**
@@ -146,6 +146,42 @@ export default class GameCapsule {
   }
 
   /**
+   * マウスのx軸を取得
+   * レティナ対応
+   * @return {number} 
+   */
+  get mouseX () {
+    return this.divisionRetina(this.stage.mouseX)
+  }
+
+  /**
+   * マウスのy軸を取得
+   * レティナ対応
+   * @return {number} 
+   */
+  get mouseY () {
+    return this.divisionRetina(this.stage.mouseY)
+  }
+
+  /**
+   * キャンバスの横幅
+   * レティナ対応
+   * @return {number} 
+   */
+  get width () {
+    return this.divisionRetina(this.canvas.width)
+  }
+
+  /**
+   * キャンバスの縦幅
+   * レティナ対応
+   * @return {number} 
+   */
+  get height () {
+    return this.divisionRetina(this.canvas.height)
+  }
+
+  /**
    * 総タイムを元に表示用に整形された値を返す
    * @param {boolean} isZeroPadding trueの場合値をゼロ詰めする
    * @return {Object} s, mを持つオブジェクト
@@ -187,7 +223,7 @@ export default class GameCapsule {
    * @param {number} num 割られる値
    * @return {number} 引数にdevicePixelRatioを割った値
    */
-  divisionRetina = function(num) {
+  divisionRetina (num) {
     return this.options.isRetina ? num / window.devicePixelRatio : num
   }
 
@@ -197,8 +233,8 @@ export default class GameCapsule {
    * @param {number} max 最大値
    * @return {number} min〜max間のランダムの整数値
    */
-  createRandom = function(min, max) {
-    return Math.floor(Math.random() * (max - min) + min)
+  createRandom (min, max) {
+    return createRandom(min, max)
   }
 
   /**
@@ -207,13 +243,8 @@ export default class GameCapsule {
    * @param {number} digit けた数
    * @return {string} ゼロ詰めされた文字列
    */
-  zeroPadding = function(target, digit) {
-    var zero = (function() {
-      var tmp = ''
-      for (var i = 0; i < digit; i++) tmp += '0'
-      return tmp
-    })()
-    return (zero + target.toString()).slice(-digit)
+  zeroPadding (target, digit) {
+    return zeroPadding(target, digit)
   }
 
   /**
@@ -263,6 +294,7 @@ export default class GameCapsule {
     this.parent = this.options.parent ? document.querySelector(this.options.parent) : null
     this.canvas = document.querySelector(this.options.target)
     this.canvas.style.setProperty('-webkit-tap-highlight-color', 'rgba(0, 0, 0, 0)') // クリックしてもハイライトしないようにする
+    this.canvas.style.setProperty('vertical-align', 'top') // canvasの下に隙間ができないように修正
 
     // ステージの初期化
     this.stage = null

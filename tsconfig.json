@@ -7,9 +7,9 @@
     // node_modules からライブラリを読み込む
     "moduleResolution": "node",
     // コメント削除
-    // "removeComments": true,
+    "removeComments": true,
     // 型定義作成
-    "declaration": true,
+    // "declaration": true,
     "lib": [
       "es2017", // 将来追加されるの機能を全て使う
       "dom" // ブラウザのDOMAPIを使う
@@ -18,8 +18,7 @@
     "sourceMap": true,
     // 型定義フィアルの読み込み先
     "typeRoots": [
-      "./node_modules/@types",
-      "./node_modules/sweetalert2/sweetalert2.d.ts"
+      "./node_modules/@types"
     ]
   }
 }

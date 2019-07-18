@@ -166,6 +166,30 @@ canvasの大きさを決める親要素
 
 ## プロパティ
 GameCapsuleインスタンスが持つプロパティ
+### mouseX
+stage.mouseXの値  
+isRetinaがtrueの時に使うとRetinaに対応した値が取れる
+```
+gameCapsule.mouseX;
+```
+### mouseY
+stage.mouseYの値  
+isRetinaがtrueの時に使うとRetinaに対応した値が取れる
+```
+gameCapsule.mouseY;
+```
+### width
+canvas.widthの値  
+isRetinaがtrueの時に使うとRetinaに対応した値が取れる
+```
+gameCapsule.width;
+```
+### height
+canvas.heightの値  
+isRetinaがtrueの時に使うとRetinaに対応した値が取れる
+```
+gameCapsule.height;
+```
 ### isIos
 iPad, iPhone, iPodの場合`true`, それ以外`false`
 ```
