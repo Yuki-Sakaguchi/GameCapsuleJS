@@ -18,7 +18,7 @@ declare namespace GameCapsule.prototype{
 }
 
 /**
- * 
+ * # sourceMappingURL=gacha.js.map
  */
 declare interface GameCapsule {
 		

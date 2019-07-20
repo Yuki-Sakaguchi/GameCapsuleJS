@@ -1,6 +1,6 @@
 {
   "name": "game-capsule",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "scripts": {
     "build": "rollup --config rollup.config.js",
     "watch": "rollup -w --config rollup.config.js",
