@@ -13,17 +13,17 @@ export const isMobile = isIos || isAndroid
  * @param {number} max 最大値
  * @return {number} min〜max間のランダムの整数値
  */
-export const createRandom = (min, max) => {
+export const createRandom = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min) + min)
 }
 
 /**
- * ゼロ詰め
+ * ゼロ埋め
  * @param {number} target 対象の数値
  * @param {number} digit けた数
- * @return {string} ゼロ詰めされた文字列
+ * @return {string} ゼロ埋めされた文字列
  */
-export const zeroPadding = (target, digit) => {
+export const zeroPadding = (target: number, digit: number): string => {
   let zero = (() => {
     let tmp = ''
     for (let i = 0; i < digit; i++) tmp += '0'

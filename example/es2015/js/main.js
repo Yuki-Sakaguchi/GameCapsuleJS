@@ -14,8 +14,8 @@ class Game extends GameCapsule {
     let MAX_LIFE = 40
     let particles = []
   
-    this.stage.mouseX = this.stage.canvas.width / 2
-    this.stage.mouseY = this.stage.canvas.height * 1 / 3
+    this.mouseX = this.width / 2
+    this.mouseY = this.height * 1 / 3
   
     this.elTimer = document.querySelector('.js-timer')
     
@@ -28,11 +28,11 @@ class Game extends GameCapsule {
   
         const particle = new createjs.Shape()
         particle.graphics.beginFill(createjs.Graphics.getHSL(count, 50, 50)).drawCircle(0, 0, 30 * Math.random())
-        particle.compositeOperation = "lighter"
+        particle.compositeOperation = 'lighter'
         this.stage.addChild(particle)
         
-        particle.x = this.divisionRetina(this.stage.mouseX)
-        particle.y = this.divisionRetina(this.stage.mouseY)
+        particle.x = this.mouseX
+        particle.y = this.mouseY
   
         particle.vx = 30 * (Math.random() - 0.5)
         particle.vy = 30 * (Math.random() - 0.5)
@@ -54,8 +54,8 @@ class Game extends GameCapsule {
         particle.x += particle.vx
         particle.y += particle.vy
 
-        if (particle.y > this.stage.canvas.height) {
-          particle.y = this.stage.canvas.height
+        if (particle.y > this.height) {
+          particle.y = this.height
           particle.vy *= -1
         }
 

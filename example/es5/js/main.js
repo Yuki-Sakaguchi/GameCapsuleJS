@@ -1,94 +1,80 @@
 /**
  * パーティクルを生成
  */
-var game = new GameCapsule();
+var game = new GameCapsule()
 
 /**
  * 初期化処理
  */
 game.init = function() {
-  var count = 0; // tick イベントの回数
-  var MAX_LIFE = 40; // 寿命の最大値
-  var particles = []; // パーティクルの入れ物
+  var count = 0
+  var MAX_LIFE = 40
+  var particles = []
 
-  this.stage.mouseX = this.stage.canvas.width / 2; // 初期位置X
-  this.stage.mouseY = this.stage.canvas.height * 1 / 3; // 初期位置Y
+  this.mouseX = this.width / 2
+  this.mouseY = this.height * 1 / 3
 
-  this.elTimer = document.querySelector('.js-timer');
+  this.elTimer = document.querySelector('.js-timer')
   
   /**
    * パーティクルを生成
    */
-  this.emitParticles = function() {
-    // パーティクルの生成
+  this.emitParticles = () => {
     for (var i = 0; i < 5; i++) {
-      // カウントの更新
-      count += 1;
+      count += 1
 
-      // オブジェクトの作成
-      var particle = new createjs.Shape();
-      particle.graphics.beginFill(createjs.Graphics.getHSL(count, 50, 50)).drawCircle(0, 0, 30 * Math.random());
-      particle.compositeOperation = "lighter";
-      this.stage.addChild(particle);
+      const particle = new createjs.Shape()
+      particle.graphics.beginFill(createjs.Graphics.getHSL(count, 50, 50)).drawCircle(0, 0, 30 * Math.random())
+      particle.compositeOperation = 'lighter'
+      this.stage.addChild(particle)
       
-      // パーティクルの発生場所
-      particle.x = this.divisionRetina(this.stage.mouseX);
-      particle.y = this.divisionRetina(this.stage.mouseY);
+      particle.x = this.mouseX
+      particle.y = this.mouseY
 
-      // 動的にプロパティーを追加します。
-      // 速度
-      particle.vx = 30 * (Math.random() - 0.5);
-      particle.vy = 30 * (Math.random() - 0.5);
-      // 寿命
-      particle.life = MAX_LIFE;
-      particles.push(particle);
+      particle.vx = 30 * (Math.random() - 0.5)
+      particle.vy = 30 * (Math.random() - 0.5)
+
+      particle.life = MAX_LIFE
+      particles.push(particle)
     }
   }
 
   /**
    * パーティクルの位置を更新
    */
-  this.updateParticles = function() {
-    // パーティクルの計算を行う
+  this.updateParticles = () => {
     for (var i = 0; i < particles.length; i++) {
-      // オブジェクトの作成
-      var particle = particles[i];
-      // 重力
-      particle.vy += 1;
-      // 摩擦
-      particle.vx *= 0.96;
-      particle.vy *= 0.96;
-      // 速度を位置に適用
-      particle.x += particle.vx;
-      particle.y += particle.vy;
-      // 地面
-      if (particle.y > this.stage.canvas.height) {
-        particle.y = this.stage.canvas.height; // 行き過ぎ補正
-        particle.vy *= -1; // Y軸の速度を反転
+      const particle = particles[i]
+      particle.vy += 1
+      particle.vx *= 0.96
+      particle.vy *= 0.96
+      particle.x += particle.vx
+      particle.y += particle.vy
+
+      if (particle.y > this.height) {
+        particle.y = this.height
+        particle.vy *= -1
       }
-      // パーティクルのサイズをライフ依存にする
-      var scale = particle.life / MAX_LIFE;
-      particle.scaleX = particle.scaleY = scale;
-      // 寿命を減らす
-      particle.life -= 1;
-      // 寿命の判定
+
+      const scale = particle.life / MAX_LIFE
+      particle.scaleX = particle.scaleY = scale
+
+      particle.life -= 1
+
       if (particle.life <= 0) {
-        // ステージから削除
-        this.stage.removeChild(particle);
-        // 配列からも削除
-        particles.splice(i, 1);
+        this.stage.removeChild(particle)
+        particles.splice(i, 1)
       }
     }
   }
-};
+}
 
 /**
  * 更新処理
  */
 game.update = function(e) {
-  this.emitParticles();
-  this.updateParticles();
-
-  var dispTimer = this.getDispTime(true);
-  this.elTimer.textContent = dispTimer.m + ':' + dispTimer.s;
-};
+  this.emitParticles()
+  this.updateParticles()
+  var dispTimer = this.getDispTime(true)
+  this.elTimer.textContent = dispTimer.m + ':' + dispTimer.s
+}

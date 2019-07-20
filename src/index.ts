@@ -2,30 +2,42 @@ declare const createjs
 import { CLASS_NAME, isIos, isAndroid, isMobile, createRandom, zeroPadding } from './util/util'
 import { Gacha } from './util/gacha';
 
+interface GameOptions {
+  target?: string
+  isRetina?: boolean
+  isTouch?: boolean
+  parent?: string
+  countDownSeconds?: number
+}
+
 /**
  * @class GameCapsule
  */
 export default class GameCapsule {
-  private options
-  private timer
-  private stage
-  private parent
-  private canvas
-  public Gacha
-  public isIos
-  public isAndroid
-  public isMobile
-  public isPause
-  public totalTime
+  options: GameOptions
+  timer: NodeJS.Timeout
+  stage: any
+  parent: HTMLHtmlElement
+  canvas: HTMLCanvasElement
+  Gacha: any
+  isIos: boolean
+  isAndroid: boolean
+  isMobile: boolean
+  isPause: boolean
+  totalTime: any
 
+  /**
+   * 値の初期化
+   * @constructor
+   * @param options 
+   */
   constructor (options) {
-    // オプション
     this.options = {
       target: '#canvas',
       isRetina: true,
       isTouch: true,
       parent: null,
-      countDownSeconds: 0, // 秒を入れる
+      countDownSeconds: 0,
     }
 
     // オプション上書き
@@ -44,8 +56,6 @@ export default class GameCapsule {
     this.isPause = false
 
     // 経過時間
-    this.timer = 0
-    this.totalTime
     this._initTimer()
 
     // 初期化処理
@@ -120,7 +130,7 @@ export default class GameCapsule {
     // タイマー
     this.timer = setInterval(() => {
       this.totalTime.s++
-      this.totalTime.m = Math.floor(this.totalTime.s/60)
+      this.totalTime.m = Math.floor(this.totalTime.s / 60)
     }, 1000)
 
     // stageの初回更新
@@ -154,6 +164,14 @@ export default class GameCapsule {
     return this.divisionRetina(this.stage.mouseX)
   }
 
+  set mouseX (x) {
+    if (this.options.isRetina && window.devicePixelRatio) {
+      this.stage.mouseX = x * window.devicePixelRatio
+    } else {
+      this.stage.mouseX = x 
+    }
+  }
+
   /**
    * マウスのy軸を取得
    * レティナ対応
@@ -163,13 +181,21 @@ export default class GameCapsule {
     return this.divisionRetina(this.stage.mouseY)
   }
 
+  set mouseY (y) {
+    if (this.options.isRetina && window.devicePixelRatio) {
+      this.stage.mouseY = y * window.devicePixelRatio
+    } else {
+      this.stage.mouseY = y 
+    }
+  }
+
   /**
    * キャンバスの横幅
    * レティナ対応
    * @return {number} 
    */
   get width () {
-    return this.divisionRetina(this.canvas.width)
+    return this.divisionRetina(this.stage.canvas.width)
   }
 
   /**
@@ -178,7 +204,7 @@ export default class GameCapsule {
    * @return {number} 
    */
   get height () {
-    return this.divisionRetina(this.canvas.height)
+    return this.divisionRetina(this.stage.canvas.height)
   }
 
   /**
@@ -187,8 +213,8 @@ export default class GameCapsule {
    * @return {Object} s, mを持つオブジェクト
    */
   getDispTime (isZeroPadding) {
-    var dispTime: any = {
-      s: Math.floor(this.totalTime.s%60),
+    const dispTime: any = {
+      s: Math.floor(this.totalTime.s % 60),
       m: this.totalTime.m,
     }
     if (isZeroPadding) {
@@ -205,9 +231,9 @@ export default class GameCapsule {
    */
   getRemainingTime (isZeroPadding) {
     if (!this.options.countDownSeconds) return false
-    var remainingS = this.options.countDownSeconds - this.totalTime.s
-    var remainingM = Math.floor(remainingS/60)
-    var dispTime: any = {
+    const remainingS = this.options.countDownSeconds - this.totalTime.s
+    const remainingM = Math.floor(remainingS/60)
+    const dispTime: any = {
       s: remainingS,
       m: remainingM,
     }
@@ -268,7 +294,7 @@ export default class GameCapsule {
    */
   _clearStage () {
     this.isPause = createjs.Ticker.paused = false
-    createjs.Ticker.removeEventListener("tick", this.stage)
+    createjs.Ticker.removeEventListener('tick', this.stage)
     createjs.Ticker.reset()
     this.stage.removeAllChildren()
     createjs.Tween.removeAllTweens()
@@ -301,7 +327,7 @@ export default class GameCapsule {
     this.stage = new createjs.Stage(this.options.target.replace(/(.|#)/, ''))
     this._setCanvasSize()
     if (this.options.isRetina) this._devicePixelRatio()
-    if (this.options.islTouch && createjs.Touch.isSupported()) createjs.Touch.enable(this.stage)
+    if (this.options.isTouch && createjs.Touch.isSupported()) createjs.Touch.enable(this.stage)
   }
 
   /**
@@ -324,8 +350,8 @@ export default class GameCapsule {
    */
   _devicePixelRatio () {
     if (window.devicePixelRatio) {
-      var tmpW = this.canvas.width
-      var tmpH = this.canvas.height
+      const tmpW = this.canvas.width
+      const tmpH = this.canvas.height
       this.canvas.width = tmpW * window.devicePixelRatio
       this.canvas.height = tmpH * window.devicePixelRatio
       this.canvas.style.width = tmpW + 'px'

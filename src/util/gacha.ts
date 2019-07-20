@@ -5,9 +5,9 @@
  * @constructor
  */
 export class Gacha {
-  private list
-  private key
-  private totalWeight
+  list
+  key
+  totalWeight
 
   constructor (list, key) {
     this.list = list

@@ -11,8 +11,10 @@ create.jsに依存したゲーム作成用フレームワーク
 - ランダムな値生成関数
 - カウントダウン
 
-# DEMO
-https://yuki-sakaguchi.github.io/GameCapsuleJS/example/es2015/index.html
+# example
+- [Getting Started](https://yuki-sakaguchi.github.io/GameCapsuleJS/example/getting_started/index.html)
+- [es2015](https://yuki-sakaguchi.github.io/GameCapsuleJS/example/es2015/index.html)
+- [es5](https://yuki-sakaguchi.github.io/GameCapsuleJS/example/es5/index.html)
 
 # 使い方
 ## 準備
@@ -23,16 +25,14 @@ https://yuki-sakaguchi.github.io/GameCapsuleJS/example/es2015/index.html
 
 <!-- 依存しているcreate.jsとgame-capsule.jsを読み込む -->
 <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
-<script src="js/plugins/game-capsule.js"></script>
+<script src="js/game-capsule.js"></script>
 ```
 
 ## 実装
 ### ES2015
 1. `GameCapsule`クラスをextendsしたクラスを定義する
 2. 定義したクラスに`init`メソッド(canvas上で使う変数の定義)と`update`メソッド(fpsに合わせたstageの更新処理)を定義する
-3. `play`メソッドを実行すると動きだす
-4. 動きを止めたいときは`pause`メソッドをを実行。止まっている時に再び`pause`メソッドを実行すると動きだす
-5. 全てを初期化して初めから動かし直したいときは`reset`メソッドを実行
+
 ```
 /**
  * GameCapsuleを継承したクラスを定義
@@ -46,22 +46,26 @@ class Game extends GameCapsule {
    *  stageで使う変数などを定義
    */
   init () {
-    // updateで使いたい変数や関数はthisで定義する
-    this.move = () => {
-      shape.x += 1
-    }
+    let _this = this
+    let isRight = true
+    let movePoint = 1
 
-    // このスコープで使うだけのものはvarで良い
-    var shape = new createjs.Shape()
+    // このスコープで使うだけのものはlet, constで良い
+    let shape = new createjs.Shape()
     shape.graphics.beginFill('DarkRed').drawCircle(0, 0, 30)
-    shape.x = this.divisionRetina(this.stage.canvas.width) / 2 // divisionRetina()はRetina対応によりずれる値を調整する関数
-    shape.y = this.divisionRetina(this.stage.canvas.height) / 2
+    shape.x = this.width / 2
+    shape.y = this.height / 2
     this.stage.addChild(shape)
+
+    // updateで使いたい変数や関数はthisで定義する
+    this.move = function() {
+      shape.x += isRight ? movePoint : -movePoint
+      if (shape.x > _this.width || shape.x < 0) {
+        isRight = !isRight
+      }
+    }
   }
 
-  /**
-   * メインループ（stage.update()は自動でやるので不要）
-   */
   update () {
     this.move()
   }
@@ -81,13 +85,11 @@ const game = new Game({
 ### ES5
 1. `GameCapsule`クラスでインスタンスを生成する
 2. 生成されたインスタンスに`init`メソッド(canvas上で使う変数の定義)と`update`メソッド(fpsに合わせたstageの更新処理)を定義する
-3. `play`メソッドを実行すると動きだす
-4. 動きを止めたいときは`pause`メソッドをを実行。止まっている時に再び`pause`メソッドを実行すると動きだす
-5. 全てを初期化して初めから動かし直したいときは`reset`メソッドを実行
+
 ```
 /**
- * まずはインスタンス生成
- */
+  * まずはインスタンス生成
+  */
 // オプションで色々設定できる
 var game = new GameCapsule({
   target: '#canvas',
@@ -98,32 +100,42 @@ var game = new GameCapsule({
 })
 
 /**
- *  stageで使う変数などを定義
- */
+  *  stageで使う変数などを定義
+  */
 game.init = function() {
-  // updateで使いたい変数や関数はthisで定義する
-  this.move = function() {
-    shape.x += 1
-  }
+  var _this = this
+  var isRight = true
+  var movePoint = 1
 
   // このスコープで使うだけのものはvarで良い
   var shape = new createjs.Shape()
   shape.graphics.beginFill('DarkRed').drawCircle(0, 0, 30)
-  shape.x = this.divisionRetina(this.stage.canvas.width) / 2 // divisionRetina()はRetina対応によりずれる値を調整する関数
-  shape.y = this.divisionRetina(this.stage.canvas.height) / 2
+  shape.x = this.width / 2
+  shape.y = this.height / 2
   this.stage.addChild(shape)
+
+  // updateで使いたい変数や関数はthisで定義する
+  this.move = function() {
+    shape.x += isRight ? movePoint : -movePoint
+    if (shape.x > _this.width || shape.x < 0) {
+      isRight = !isRight
+    }
+  }
 }
 
 /**
- * メインループ（stage.update()は自動でやるので不要）
- */
+  * メインループ（stage.update()は自動でやるので不要）
+  */
 game.update = function(e) {
   this.move()
 }
 ```
 
 ## 実行
-以下のように外部から再生を制御できる
+1. `play`メソッドを実行すると動きだす
+2. 動きを止めたいときは`pause`メソッドをを実行。止まっている時に再び`pause`メソッドを実行すると動きだす
+3. 全てを初期化して初めから動かし直したいときは`reset`メソッドを実行
+
 ```
 window.addEventListener('load', function() {
   game.play() // load後自動で再生
@@ -261,7 +273,7 @@ gameCapsule.divisionRetina(100); //-> 50
 gameCapsule.createRandom(1, 10); //-> 1〜10のどれかの整数
 ```
 ### zeroPadding
-数字のゼロ詰め  
+数字のゼロ埋め   
 第１引数にターゲットの数値、第２引数には桁数を入れる
 ```
 gameCapsule.zeroPadding(33, 5); //-> 00033
