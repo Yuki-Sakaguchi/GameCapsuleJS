@@ -1,7 +1,7 @@
 # GameCapsuleJS
-![npm](https://img.shields.io/npm/v/game-capsule.svg)
-![npm](https://img.shields.io/npm/dt/game-capsule.svg)
-![npm](https://img.shields.io/npm/l/game-capsule.svg)  
+[![npm](https://img.shields.io/npm/v/game-capsule.svg)](https://www.npmjs.com/package/game-capsule)
+[![npm](https://img.shields.io/npm/dt/game-capsule.svg)](https://npmcharts.com/compare/game-capsule?minimal=true)
+[![npm](https://img.shields.io/npm/l/game-capsule.svg)](https://www.npmjs.com/package/game-capsule)  
 
 create.jsに依存したゲーム作成用フレームワーク  
 ゲームのメイン処理の作成に集中できるよう、その他気にしないといけないことはこれがやってくれる
