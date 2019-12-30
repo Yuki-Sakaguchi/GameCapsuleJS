@@ -1,4 +1,8 @@
 # GameCapsuleJS
+![npm](https://img.shields.io/npm/v/game-capsule.svg)
+![npm](https://img.shields.io/npm/dt/game-capsule.svg)
+![npm](https://img.shields.io/npm/l/game-capsule.svg)  
+
 create.jsに依存したゲーム作成用フレームワーク  
 ゲームのメイン処理の作成に集中できるよう、その他気にしないといけないことはこれがやってくれる
 
@@ -46,7 +50,6 @@ class Game extends GameCapsule {
    *  stageで使う変数などを定義
    */
   init () {
-    let _this = this
     let isRight = true
     let movePoint = 1
 
@@ -58,9 +61,9 @@ class Game extends GameCapsule {
     this.stage.addChild(shape)
 
     // updateで使いたい変数や関数はthisで定義する
-    this.move = function() {
+    this.move = () => {
       shape.x += isRight ? movePoint : -movePoint
-      if (shape.x > _this.width || shape.x < 0) {
+      if (shape.x > this.width || shape.x < 0) {
         isRight = !isRight
       }
     }
